@@ -8,17 +8,28 @@ Trabalho 1 do Curso de Segurança Computacional com cifrador/decifrador de cifra
 - [x] Decifrador sem chave
 - [ ] Relatório
 
-## Primeiros Passos
+## ⚙️ Primeiros Passos
 
 Para executar o projeto é interessante ter python instalado:
 
 - [VSCode: Ambiente recomendado para executar o projeto em Python](https://code.visualstudio.com/download)
 - [Download versão mais recente Python](https://www.python.org/downloads/)
 
-## Sobre o projeto
- Alguma coisa:```Alguma coisa destacada``` 
+## 🚀 Sobre o projeto
+### Parte I - cifrador/decifrador: 
+O cifrador recebe uma senha e uma mensagem que é cifrada segundo a cifra de Vigenère,
+gerando um criptograma, enquanto o decifrador recebe uma senha e um criptograma que é
+decifrado segundo a cifra de Vigenère, recuperando uma mensagem.
 
-## 🛠 1.  Instruções para execução do projeto
+### Parte II - ataque de recuperação de senha por análise de frequência: 
+Serão fornecidas duas mensagens cifradas (uma em português e outra em inglês) com senhas
+diferentes. Cada uma das mensagens deve ser utilizada para recuperar a senha geradora do
+keystream usado na cifração e então decifradas.
+
+Para as frequências das letras foram usadas: https://pt.wikipedia.org/wiki/Frequ%C3%AAncia_de_letras 
+
+
+## 🛠 Instruções para execução do projeto
 
 ### Comando de registro (-r)
 - '-user' [username]
@@ -52,16 +63,6 @@ ou
 dotnet run -- -j -pswd m1a2t3c4a5v6 -user MateusCavalcanti
 ```
  
-
-## ⚙️ 2.  ???
-```
-???
-```
-  
-## 🚀 3.  ???
-```
-???
-```
 
 ## 💜 ???
 ```
