@@ -1,10 +1,16 @@
 #!/usr/bin/python3
 
-# python3 trab1.py -cif mateuslindo -key julia
-# python3 trab1.py -decif vuemubftvdx -key julia
-# python3 trab1.py -quebra fhvzpiehmmnpdlzvdtuoeazncdseaxmdwsoodedqaahpahaztljyhbgtyulrbuifyyigmfxfreimoiywedakqzvvqsamvnzzzeyunamnbrghgmfccweuazdfutargwaruahpvfhpoebwwbneheeawqtktxysmwqryanlvqqgbxadexwtvtwogsviaifvasefnwwehmupjcxgbxnqeubzjrvudekppzrlsztrvjbulnsedjlzedseieosqqgeziebsmzldplvwqbratmlcbsmyrrqmzxdczjezeiiewevoztymtvghrzekbpvqwodegmlbcuepewqymqfhgnbalaahcqsjicgzdkunxbsqfwhqfzzdbguuqgvvpznwodoebsmvqtqremeqgxsqsrltkglozaigznbyedlrbtvjrrpstwxjvqepwzbsiudnpfltznzrdqljmybrqcqskzfkgxrqskwrmahrmtvtzzrpibsluhpvfhxofsdzrdsanrjwmgkeseemcighdxoimxqcvuyijbsmehfarviwenbsrrvmqzbprqpvbtbvrnunamnbrghgmfccweqozcyicipwedijbtkjrrpsvbn -lang us
+# python3 trab1.py -cif -msg='mateuslindo' -key='julia'
+# python3 trab1.py -decif -msg='vuemubftvdx' -key='julia'
+# python3 trab1.py -quebra -msg='fhvzpiehmmnpdlzvdtuoeazncdseaxmdwsoodedqaahpahaztljyhbgtyulrbuifyyigmfxfreimoiywedakqzvvqsamvnzzzeyunamnbrghgmfccweuazdfutargwaruahpvfhpoebwwbneheeawqtktxysmwqryanlvqqgbxadexwtvtwogsviaifvasefnwwehmupjcxgbxnqeubzjrvudekppzrlsztrvjbulnsedjlzedseieosqqgeziebsmzldplvwqbratmlcbsmyrrqmzxdczjezeiiewevoztymtvghrzekbpvqwodegmlbcuepewqymqfhgnbalaahcqsjicgzdkunxbsqfwhqfzzdbguuqgvvpznwodoebsmvqtqremeqgxsqsrltkglozaigznbyedlrbtvjrrpstwxjvqepwzbsiudnpfltznzrdqljmybrqcqskzfkgxrqskwrmahrmtvtzzrpibsluhpvfhxofsdzrdsanrjwmgkeseemcighdxoimxqcvuyijbsmehfarviwenbsrrvmqzbprqpvbtbvrnunamnbrghgmfccweqozcyicipwedijbtkjrrpsvbn' -lang='us'
 
 import sys
+
+ASC_OFFSET = 97
+ALF_OFFSET = 26
+
+DE_CIF_ARGS = ['-msg', '-key']
+QUEBRA_ARGS = ['-msg', '-lang']
 
 br_freqs = {'a':0.1463, 'b':0.0104, 'c':0.0388, 'd':0.0499, 'e':0.1257,
             'f':0.0102, 'g':0.0130, 'h':0.0128, 'i':0.0618, 'j':0.0040,
@@ -16,9 +22,6 @@ us_freqs = {'a':0.08167, 'b':0.01492, 'c':0.02782, 'd':0.04253, 'e':0.12702,
              'k':0.00772, 'l':0.04025, 'm':0.02406, 'n':0.06749, 'o':0.07507,
              'p':0.01929, 'q':0.00095, 'r':0.05987, 's':0.06327, 't':0.09056,
              'u':0.02758, 'v':0.00978, 'w':0.02360, 'x':0.00150, 'y':0.01974, 'z':0.00074}
-
-ASC_OFFSET = 97
-ALF_OFFSET = 26
 
 # CIFRADOR #
 def Cifrador(plain_msg, key):
@@ -175,6 +178,20 @@ def find_closest_ic(len_ics, target):
 
 def main():
 
+    args = []
+    args_vals = []
+
+    # Monta estrutura para verificar os argumentos passados
+    if len(sys.argv) > 1:
+        for i in range(1, len(sys.argv)):
+            index = sys.argv[i].find('=')
+            if index is -1:
+                args.append(sys.argv[i])
+                args_vals.append('')
+            else:
+                args.append(sys.argv[i][:index])
+                args_vals.append(sys.argv[i][index+1:])      
+
     print("\n########################################")
     print("# Seguração Computacional - Trabalho 1 #")
     print("########################################\n")
@@ -182,31 +199,45 @@ def main():
     if len(sys.argv) is 1:
         print(" > Informações sobre os parâmetros (-help)\n")
     elif str(sys.argv[1]) == '-help':
-        print(" [*] Cifra -> -cif 'mensagem em claro' -key 'chave'\n"
-              " [*] Decifra -> -decif 'mensagem cifrada' -key 'chave'\n"
-              " [*] Quebra de senha -> -break 'mensagem cifrada' -lang 'br|us'\n")
+        print(" [*] Cifra -> -cif [mensagem em claro] -key [chave]\n"
+              " [*] Decifra -> -decif [mensagem cifrada] -key [chave]\n"
+              " [*] Quebra de senha -> -break [mensagem cifrada] -lang [br|us]\n")
     elif str(sys.argv[1]) == '-cif':
         # CODIFICADOR #
+        for arg in DE_CIF_ARGS:
+            if arg not in args:
+                print(" [X] Argumento '%s' não fornecido\n" % arg)
+                return
+
         print(" (*) CODIFICADOR (*)\n")
         print("> Plain text: %s" % sys.argv[2])
-        enc_msg = Cifrador(sys.argv[2], sys.argv[4])
+        enc_msg = Cifrador(args_vals[1], args_vals[2])
         print("\n> Encrypted text: %s\n" % enc_msg)
     elif str(sys.argv[1]) == '-decif':
         # DECODIFICADOR # 
+        for arg in DE_CIF_ARGS:
+            if arg not in args:
+                print(" [X] Argumento '%s' não fornecido\n" % arg)
+                return
+
         print(" (*) DECODIFICADOR (*)\n")
         print("> Encrypted text: %s" % sys.argv[2])
-        plain_msg = Decifrador(sys.argv[2], sys.argv[4])
+        plain_msg = Decifrador(args_vals[1], args_vals[2])
         print("\n> Decrypted text: %s\n" % plain_msg)
     elif str(sys.argv[1]) == '-quebra':
         # QUEBRA DE CIFRA (ANÁLISE DE FREQUÊNCIA) # 
-        print(" (*) QUEBRA DE CIFRA (*)\n")
-        print("> Encrypted text: %s\n" % sys.argv[2])
-        print("> Language: %s\n" % sys.argv[4])
-        key = Quebra_cifra(sys.argv[2], sys.argv[4])
-        print("[!] Found possible key: %s" % key)
-        plain_msg = Decifrador(sys.argv[2], key)
-        print("\n> Decrypted text: %s\n" % plain_msg)
+        for arg in QUEBRA_ARGS:
+            if arg not in args:
+                print(" [X] Argumento '%s' não fornecido\n" % arg)
+                return
 
+        print(" (*) QUEBRA DE CIFRA (*)\n")
+        print("> Encrypted text: %s\n" % args_vals[1])
+        print("> Language: %s\n" % args_vals[2])
+        key = Quebra_cifra(args_vals[1], args_vals[2])
+        print("[!] Found possible key: %s" % key)
+        plain_msg = Decifrador(args_vals[1], key)
+        print("\n> Decrypted text: %s\n" % plain_msg)
     else:
         print(" [X] Parâmetro '%s' não reconhecido\n" % sys.argv[1])
 
