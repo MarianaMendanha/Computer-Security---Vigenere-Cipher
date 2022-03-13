@@ -1,8 +1,13 @@
 #!/usr/bin/python3
 
-# python3 trab1.py -cif -msg='mateuslindo' -key='julia'
-# python3 trab1.py -decif -msg='vuemubftvdx' -key='julia'
+# python3 trab1.py -cif -msg='ifabodyisatrestormovingataconstantspeedinastraightlineitwillremainatrestorkeepmovinginastraightlineatconstantspeedunlessitisacteduponbyaforce' -key='newton'
+# python3 trab1.py -decif -msg='vjwucqlmotherwphfzbzegungeyhbfgejmgcrizbbnfxntwtuxhbbrmmppwyyvafovaepksfgsndsrcqkowatmjtggeeezvgymjxogpsjlhnaxoisrqyjesffmpbgnpxawicbrxrosbvyx' -key='newton'
+
+# python3 trab1.py -cif -msg='deixedeladoessebaixoastralergaacabecaenfrenteomalqueagindoassimseravitalparaoseucoracaoequeemcadaexperienciaseaprendeumalicaoeujasofriporamarassimmedediqueimasfoitudoemvao' -key='guineto'
+# python3 trab1.py -decif -msg='jyqkiwsrulbilgkvivbhoynznpxfmuipeusiumajkstnmbqtzwomnkbbjiifwbayyznzbhgfxnvtcyycpskoiuwrunskgknhtsdjmemxbicifitdxyvqinagfqpehsadifsyfojweefoxuafmfakxmqmjikcunwyconcqsxabuw' -key='guineto'
+
 # python3 trab1.py -quebra -msg='fhvzpiehmmnpdlzvdtuoeazncdseaxmdwsoodedqaahpahaztljyhbgtyulrbuifyyigmfxfreimoiywedakqzvvqsamvnzzzeyunamnbrghgmfccweuazdfutargwaruahpvfhpoebwwbneheeawqtktxysmwqryanlvqqgbxadexwtvtwogsviaifvasefnwwehmupjcxgbxnqeubzjrvudekppzrlsztrvjbulnsedjlzedseieosqqgeziebsmzldplvwqbratmlcbsmyrrqmzxdczjezeiiewevoztymtvghrzekbpvqwodegmlbcuepewqymqfhgnbalaahcqsjicgzdkunxbsqfwhqfzzdbguuqgvvpznwodoebsmvqtqremeqgxsqsrltkglozaigznbyedlrbtvjrrpstwxjvqepwzbsiudnpfltznzrdqljmybrqcqskzfkgxrqskwrmahrmtvtzzrpibsluhpvfhxofsdzrdsanrjwmgkeseemcighdxoimxqcvuyijbsmehfarviwenbsrrvmqzbprqpvbtbvrnunamnbrghgmfccweqozcyicipwedijbtkjrrpsvbn' -lang='us'
+# python3 trab1.py -quebra -msg='jyqkiwsrulbilgkvivbhoynznpxfmuipeusiumajkstnmbqtzwomnkbbjiifwbayyznzbhgfxnvtcyycpskoiuwrunskgknhtsdjmemxbicifitdxyvqinagfqpehsadifsyfojweefoxuafmfakxmqmjikcunwyconcqsxabuw' -lang='br'
 
 import sys
 
@@ -63,6 +68,17 @@ def Quebra_cifra(msg, lang):
     key_len = 0
     lens_ics = {}
 
+    print("# Calculando índices de coincidência ...")
+
+    target_ic = 0
+
+    if lang == "br":
+        target_ic = get_IC(br_freqs, 10000)
+    elif lang == "us":
+        target_ic = get_IC(enc_msg, 10000)
+
+    print("# Índice de coincidência '%s': %.3f" % (lang, target_ic))
+
     for key_len in range(2, 21):
         coset_s = get_cosets(msg, key_len)
         ic = 0
@@ -72,14 +88,11 @@ def Quebra_cifra(msg, lang):
 
         ic /= key_len
 
+        print("> Key lenght: %02d -> IC: %.3f" % (key_len, ic))
+
         lens_ics[key_len] = ic
 
-    closest_ic_len = 0
-
-    if lang == "br":
-        closest_ic_len = find_closest_ic(lens_ics, get_IC(br_freqs, 10000))
-    elif lang == "us":
-        closest_ic_len = find_closest_ic(lens_ics, get_IC(us_freqs, 10000))
+    closest_ic_len = find_closest_ic(lens_ics, target_ic)
 
     print("[!] Tamanho mais provável (Chave): %d" % closest_ic_len)
 
@@ -101,9 +114,12 @@ def get_key(msg, lang, key_len):
     probable_key = ""
 
     for coset in coset_s:
+        print("\n# Coset: %s" % coset)
         coset_X_s = get_coset_X_s(coset, lang)
+        for x in coset_X_s:
+            print("> %02d shift -> X² = %2.2f" % (x, coset_X_s[x]))
         min_x = min(coset_X_s, key = coset_X_s.get)
-        # print("> Min X² value for '%s': %f" % (chr(ASC_OFFSET + min_x), coset_X_s[min_x]))
+        print("[!] Min X² value for '%s': %f" % (chr(ASC_OFFSET + min_x), coset_X_s[min_x]))
         probable_key += chr(ASC_OFFSET + min_x)
 
     return probable_key
@@ -210,7 +226,7 @@ def main():
                 return
 
         print(" (*) CODIFICADOR (*)\n")
-        print("> Plain text: %s" % sys.argv[2])
+        print("> Plain text: %s" % args_vals[1])
         enc_msg = Cifrador(args_vals[1], args_vals[2])
         print("\n> Encrypted text: %s\n" % enc_msg)
     elif str(sys.argv[1]) == '-decif':
@@ -221,7 +237,7 @@ def main():
                 return
 
         print(" (*) DECODIFICADOR (*)\n")
-        print("> Encrypted text: %s" % sys.argv[2])
+        print("> Encrypted text: %s" % args_vals[1])
         plain_msg = Decifrador(args_vals[1], args_vals[2])
         print("\n> Decrypted text: %s\n" % plain_msg)
     elif str(sys.argv[1]) == '-quebra':
@@ -235,7 +251,7 @@ def main():
         print("> Encrypted text: %s\n" % args_vals[1])
         print("> Language: %s\n" % args_vals[2])
         key = Quebra_cifra(args_vals[1], args_vals[2])
-        print("[!] Found possible key: %s" % key)
+        print("\n[!] Found possible key: %s" % key)
         plain_msg = Decifrador(args_vals[1], key)
         print("\n> Decrypted text: %s\n" % plain_msg)
     else:
