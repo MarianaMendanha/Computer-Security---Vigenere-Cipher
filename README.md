@@ -6,7 +6,7 @@ Trabalho 1 do Curso de Segurança Computacional com cifrador/decifrador de cifra
 - [x] Cifrador
 - [x] Decifrador com chave
 - [x] Decifrador sem chave
-- [ ] Relatório
+- [x] Relatório
 
 ## ⚙️ Primeiros Passos
 
